@@ -5,13 +5,20 @@ import { useEffect, useState } from "react"
 
 const Home = () => {
 
-  const [data, setData] = useState<TodoList | null> (null);
+  const [data, setData] = useState<TodoList[]>([]);
 
+
+  const deleteTodo = (id: number): void => {
+    axios.delete(`http://localhost:8080/todos/${id}`)
+      .then(() => {
+        setData(data.filter(todo => todo.id !== id));
+      });
+  }
 
   async function getTodos(){
     await axios.get('http://localhost:8080/todos')
-      .then((data:any) => {
-        setData(data)
+      .then((data) => {
+        setData(data.data)
       })
   }
 
@@ -27,9 +34,13 @@ const Home = () => {
             <input type="text" className='text-center text-sm text-white border-[1px] border-[#8758ff] bg-transparent w-[70%] outline-none' placeholder='Search for todos...'/>
             <button className='bg-[#8758ff] text-white w-16 h-10 text-sm font-semibold hover:text-[#ffc300] hover:border-[#ffc300]'>Add task</button>
           </div>
-          <div className="flex justify-center w-full">
-            <Todo nome={data?.nome} />
-          </div>
+
+            {data.map((item) => (
+              <div key={item.id} className="w-full flex justify-center">
+                <Todo nome={item.nome} id={item.id} deleteTodo={()=> deleteTodo(item.id)} />
+              </div>
+            ))}
+            
         </div>
     </div>
   )
