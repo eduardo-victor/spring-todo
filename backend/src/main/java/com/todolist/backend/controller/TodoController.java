@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.todolist.backend.entity.Todo;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/todos")
 public class TodoController {
@@ -19,6 +20,7 @@ public class TodoController {
     List<Todo> create(@RequestBody Todo todo){
         return todoService.create(todo);
     }
+
 
     @GetMapping
     List<Todo>list(){
