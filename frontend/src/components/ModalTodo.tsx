@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 interface ModalProps {
   onClose: () => void;
@@ -21,6 +22,18 @@ const ModalTodo: React.FC<ModalProps> = ({ onClose, onSave }) => {
     }
   };
 
+  const handleSave = (name:string, description:string, priority:number, finished:boolean) => {
+    axios.post("http://localhost:8080/todos/",
+      {
+        nome: name,
+        descricao: description,
+        prioridade: priority,
+        realizado: finished
+      }
+    ).then(res => console.log(res))
+    onClose();
+  }
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -28,10 +41,6 @@ const ModalTodo: React.FC<ModalProps> = ({ onClose, onSave }) => {
     };
   }, []);
 
-  const handleSave = () => {
-    onSave(taskName);
-    onClose();
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -69,7 +78,7 @@ const ModalTodo: React.FC<ModalProps> = ({ onClose, onSave }) => {
             onChange={(e) => setTaskPriority(parseInt(e.target.value))}
             title="Priority"
             />
-            <button className='bg-[#8758ff] text-white w-16 h-10 text-sm font-semibold hover:text-[#ffc300] hover:border-[#ffc300]' onClick={handleSave}>Save</button>
+            <button className='bg-[#8758ff] text-white w-16 h-10 text-sm font-semibold hover:text-[#ffc300] hover:border-[#ffc300]' onClick={() => handleSave(taskName, taskDescription, taskPriority, taskFinished)}>Save</button>
         </div>
       </div>
     </div>
