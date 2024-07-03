@@ -22,17 +22,21 @@ const ModalTodo: React.FC<ModalProps> = ({ onClose, onSave }) => {
     }
   };
 
-  const handleSave = (name:string, description:string, priority:number, finished:boolean) => {
-    axios.post("http://localhost:8080/todos/",
-      {
-        nome: name,
-        descricao: description,
-        prioridade: priority,
-        realizado: finished
-      }
-    ).then(res => console.log(res))
-    onClose();
-  }
+  const handleSave = async (name:string, description:string, priority:number, finished:boolean) => {
+    try {
+      const response = await axios.post("http://localhost:8080/todos", {
+        "nome": name,
+        "descricao": description,
+        "prioridade": priority,
+        "realizado": finished
+      }).then((res) => {
+        console.log(res)
+        onClose();
+      })
+    } catch (error) {
+      console.error('Ocorreu um erro:', error);
+    }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
